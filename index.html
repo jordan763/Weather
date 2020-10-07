@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<body>
+    <h1>Weather</h1>
+
+
+
+    <div>
+        <form>
+        <label for="cityName"></label>
+        <input type="text" placeholder="Enter City here" id="cityName" data-name="cityName">
+        <input type="submit" id="addCity">
+        </form>
+    </div>
+    <table id="container1">
+        <tr>
+            <th>Past City's Viewed</th>
+            <td id="pastCity" class="pastCity"></td>
+        </tr>
+    </table>
+    <table class="container2">
+        <tr>
+            <th id="pic">Current Day</th>
+            <td id="temp">Temperature:</td>
+            <td id="hum">Humidity:</td>
+            <td id="wind">Windspeed:</td>
+
+        </tr>
+    </table>
+    <table id="container3">
+        <th>Future forecast</th>
+        <tr>
+            <th>Day 1</th>
+            <td id="day1Temp">Temperature:</td>
+            <td id="day1Humidity">Humidity:</td>
+            <td id="day1WindSpeed">Windspeed:</td>
+            
+       </tr>
+       <tr>
+            <th>Day 2</th>
+            <td id="day2Temp">Temperature:</td>
+            <td id="day2Humidity">Humidity:</td>
+            <td id="day2WindSpeed">Windspeed:</td>
+       </tr>
+    </table>
+
+
+
+
+
+   <script>
+    
+    var pastCity = [] 
+    var city = $(this).attr("data-name");
+function info(city) {
+
+var webPage = "https://api.weatherapi.com/v1/forecast.json?key=24cc6be8e7564a74af502203200610&q=" + city +"&days=7";
+
+
+$.ajax({
+    url : webPage ,
+    method : "GET"
+}).then(function(response){
+    console.log(response)
+    var pic = response.current.condition.icon
+    console.log(pic)
+    var temp = response.current.temp_c
+    console.log(temp)
+    var humidity = response.current.humidity
+    console.log(humidity)
+    var windSpeed = response.current.gust_mph
+    console.log(windSpeed)
+    
+    var day1 = response.forecast.forecastday[1]
+    console.log(day1)
+    var day1Humidity = response.forecast.forecastday[1].day.avghumidity
+    console.log(day1Humidity)
+    var day1Temp = response.forecast.forecastday[1].day.avgtemp_c
+    console.log(day1Temp)
+    var day1WindSpeed = response.forecast.forecastday[1].day.maxwind_mph
+    console.log(day1WindSpeed)
+
+
+    var day2 = response.forecast.forecastday[2]
+    console.log(day2)
+    var day2Humidity = response.forecast.forecastday[2].day.avghumidity
+    console.log(day2Humidity)
+    var day2Temp = response.forecast.forecastday[2].day.avgtemp_c
+    console.log(day2Temp)
+    var day2WindSpeed = response.forecast.forecastday[2].day.maxwind_mph
+    console.log(day2WindSpeed)
+    
+
+
+    $("#temp").append(temp + "(C)").text
+    $("#hum").append(humidity + "(%)").text
+    $("#wind").append(windSpeed + "(Mph)").text
+
+
+    $("#day1Temp").append(day1Temp + "(C)").text
+    $("#day1Humidity").append(day1Humidity + "(%)").text
+    $("#day1WindSpeed").append(day1WindSpeed + "(Mph)").text
+
+
+    $("#day2Temp").append(day2Temp + "(C)").text
+    $("#day2Humidity").append(day2Humidity + "(%)").text
+    $("#day2WindSpeed").append(day2WindSpeed + "(Mph)").text
+
+
+
+
+
+})
+}
+
+
+
+function past(){
+    $("#pastCity").empty();
+for (var i = 0; i < pastCity.length; i++) {
+    var a = $("<div>")
+    a.addClass("cityBtn");
+    a.attr("data-name", pastCity[i]);
+    a.text(pastCity[i])
+    $("#pastCity").append(a)
+}}
+
+
+$("#addCity").on("click", function(event){
+    event.preventDefault();
+    city = $("#cityName").val().trim();
+    pastCity.push(city);
+    past();
+    console.log(city)
+    info(city)
+
+});
+
+past()
+
+
+   </script>
+</body>
+</html>
